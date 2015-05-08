@@ -78,15 +78,11 @@ class SectionParser(object):
 
     def get_integer(self, page, start_text, end_text):
         name = self.report.name
-        # truncate the page
+        # truncate page because of duplicates e.g. 'READING' and 'WRITING'
+        # sections
         page = page[page.find(name):]
-
         # match only characters of length from 0-5 arggh
         raw_text = re.findall('(?<=%s)(.{0,5})(?=%s)' % (start_text, end_text), page)
-        if len(raw_text) == 0:
-            pdb.set_trace()
-        # if len(raw_text) > 1:
-        #     logger.warning("Found multiple matches: %s" % raw_text)
         return int(raw_text[0])
 
     def to_report(self):
@@ -96,7 +92,6 @@ class SectionParser(object):
         score = self.get_score()
         return self.report(score, correct, incorrect, omitted)
 
-import pdb
 
 def parse_section(page, report):
     parser = SectionParser(page, report)
