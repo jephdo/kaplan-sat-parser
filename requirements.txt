@@ -1,0 +1,2 @@
+pdfminer==20110515
+slate==0.4
