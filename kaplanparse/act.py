@@ -46,7 +46,7 @@ class StudentACTReport(object):
         return int(round(avg))
 
     @property
-    def estimated_sat(self):
+    def equivalent_sat(self):
         act_score = int(self.score)
         return ACT_TO_SAT[act_score]
 
@@ -54,12 +54,12 @@ class StudentACTReport(object):
 class KaplanACTReport(KaplanReport):
 
     def to_dataframe(self):
-        data = [(s.first_name, s.last_name, s.score, s.english.score, s.math.score, s.reading.score, s.english.score)
+        data = [(s.first_name, s.last_name, s.score, s.english.score, s.math.score,
+                 s.reading.score, s.english.score, s.equivalent_sat)
                 for s in self.student_reports]
         columns = ['first_name', 'last_name', 'overall_score', 'english_score',
-                   'math_score', 'reading_score', 'science_score']
+                   'math_score', 'reading_score', 'science_score', 'equivalent_sat']
         return pd.DataFrame(data, columns=columns)
-
 
 
 class ACTParser(KaplanParser):

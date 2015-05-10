@@ -42,7 +42,7 @@ class StudentSATReport(object):
         return self.math.score + self.reading.score + self.writing.score
 
     @property
-    def estimated_act(self):
+    def equivalent_act(self):
         sat_score = int(self.score)
         while sat_score > 0:
             try:
@@ -56,10 +56,11 @@ class StudentSATReport(object):
 class KaplanSATReport(KaplanReport):
 
     def to_dataframe(self):
-        data = [(s.first_name, s.last_name, s.score, s.math.score, s.writing.score, s.reading.score)
+        data = [(s.first_name, s.last_name, s.score, s.math.score,
+                 s.writing.score, s.reading.score, s.equivalent_act)
                 for s in self.student_reports]
         columns = ['first_name', 'last_name', 'overall_score', 'math_score',
-                   'writing_score', 'reading_score']
+                   'writing_score', 'reading_score', 'equivalent_act']
         return pd.DataFrame(data, columns=columns)
 
 
