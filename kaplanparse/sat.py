@@ -37,6 +37,13 @@ class StudentSATReport(object):
         self.writing = writing
         self.reading = reading
 
+    def __repr__(self):
+        return "<%s %s %s>" % (self.__class__.__name__, self.name, self.score)
+
+    @property
+    def name(self):
+        return self.first_name + ' ' + self.last_name
+
     @property
     def score(self):
         return self.math.score + self.reading.score + self.writing.score

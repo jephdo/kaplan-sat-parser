@@ -39,6 +39,13 @@ class StudentACTReport(object):
         self.reading = reading
         self.science = science
 
+    def __repr__(self):
+        return "<%s %s %s>" % (self.__class__.__name__, self.name, self.score)
+
+    @property
+    def name(self):
+        return self.first_name + ' ' + self.last_name
+
     @property
     def score(self):
         total = self.english.score + self.math.score + self.reading.score + self.science.score
