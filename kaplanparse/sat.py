@@ -44,9 +44,11 @@ class StudentSATReport(object):
     @property
     def equivalent_act(self):
         sat_score = int(self.score)
-        while sat_score > 0:
+        act_score_found = False
+        while sat_score > 0 and not act_score_found:
             try:
                 act_score = SAT_TO_ACT[sat_score]
+                act_score_found = True
             except KeyError:
                 sat_score -= 10
                 continue
