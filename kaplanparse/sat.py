@@ -5,6 +5,11 @@ from parser import parse_section, get_name, get_test_date,  \
 from percentiles import SAT_TO_ACT
 
 
+__all__ = [
+    'SATParser',
+    'to_sat_report',
+    'KaplanSATReport'
+]
 
 class SATMathReport(SectionReport):
     name = "MATH"
@@ -74,5 +79,8 @@ class SATParser(KaplanParser):
         kaplan_report = KaplanSATReport(reports)
         return kaplan_report
 
+def to_sat_report(filepath):
+    parser = SATParser(filepath)
+    return parser.parse()
 
 

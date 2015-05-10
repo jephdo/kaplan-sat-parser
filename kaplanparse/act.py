@@ -5,6 +5,11 @@ from parser import parse_section, get_name, get_test_date,  \
 from percentiles import ACT_TO_SAT
 
 
+__all__ = [
+    'ACTParser',
+    'to_act_report',
+    'KaplanACTReport'
+]
 
 class ACTEnglishReport(SectionReport):
     name = "ENGLISH"
@@ -75,3 +80,8 @@ class ACTParser(KaplanParser):
 
         kaplan_report = KaplanACTReport(reports)
         return kaplan_report
+
+
+def to_act_report(filepath):
+    parser = ACTParser(filepath)
+    return parser.parse()
