@@ -27,11 +27,11 @@ def get_name(page):
     return first, last
 
 def get_test_date(page):
-    raw_text = re.findall('(?<=Test Date:)(.*)(?=Page)', page)[0]
+    raw_text = re.search('Test Date:(.*)Page\s[0-9]\sof\s[0-9]', page).groups()[0]
     return pd.to_datetime(raw_text)
 
 def get_page_num(page):
-    raw_text = re.findall('(?<=Page)(.*)(?=of 5)', page)[0]
+    raw_text = re.search('Page\s([0-9])\sof\s[0-9](?:SAT|ACT)', page).groups()[0]
     return int(raw_text)
 
 
@@ -78,16 +78,26 @@ class SectionParser(object):
         return self.get_integer(self.page, 'Scaled Score', 'Percentage')
 
     def get_omitted(self):
-        return self.get_integer(self.page, 'Omitted', 'Essay Score|Scaled Score|% Correct')
+        return self.get_integer(self.page, 'Omitted', '(Scaled Score|% Correct)')
 
     def get_integer(self, page, start_text, end_text):
         name = self.report.name
         # truncate page because of duplicates e.g. 'READING' and 'WRITING'
-        # sections
-        page = page[page.find(name):]
-        # match only characters of length from 0-5 arggh
-        raw_text = re.findall('(?<=%s)(.{0,5})(?=%s)' % (start_text, end_text), page)
-        return int(raw_text[0])
+        # sections on one page.
+        # really big hack. Not sure how to deal with this because teh pdf
+        # string looks like Evidence\xc2\xadBased Reading & Writing
+        if 'Evidence-Based Reading & Writing' == name:
+            page = page[page.find('Based Reading & Writing'):]
+        else:
+            page = page[page.find(name):]
+
+        pattern = '{start_text}([0-9]+){end_text}'.format(start_text=start_text, end_text=end_text)
+        try:
+            raw_text = re.search(pattern, page).groups()[0]
+        except Exception:
+            import pdb; pdb.set_trace()
+
+        return int(raw_text)
 
     def to_report(self):
         correct = self.get_correct()
@@ -151,4 +161,3 @@ class KaplanReport(object):
     @abc.abstractmethod
     def to_dataframe(self):
         pass
-

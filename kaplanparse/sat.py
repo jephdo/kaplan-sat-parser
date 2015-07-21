@@ -12,30 +12,30 @@ __all__ = [
 ]
 
 class SATMathReport(SectionReport):
-    name = "MATH"
+    name = "Math"
 
 
-class SATReadingReport(SectionReport):
-    name = "READING"
+class SATReadingWritingReport(SectionReport):
+    name = "Evidence-Based Reading & Writing"
 
 
-class SATWritingReport(SectionReport):
-    name = "WRITING"
-
-    def __init__(self, score, correct, incorrect, omitted, essay=None):
-        super(SATWritingReport, self).__init__(score, correct, incorrect, omitted)
-        self.essay = essay
+# class SATWritingReport(SectionReport):
+#     name = "WRITING"
+#
+#     def __init__(self, score, correct, incorrect, omitted, essay=None):
+#         super(SATWritingReport, self).__init__(score, correct, incorrect, omitted)
+#         self.essay = essay
 
 
 class StudentSATReport(object):
 
-    def __init__(self, first_name, last_name, test_date, math, writing, reading):
+    def __init__(self, first_name, last_name, test_date, math, reading_writing):
         self.first_name = first_name
         self.last_name = last_name
         self.test_date = test_date
         self.math = math
-        self.writing = writing
-        self.reading = reading
+        self.reading_writing = reading_writing
+        # self.reading = reading
 
     def __repr__(self):
         return "<%s %s %s>" % (self.__class__.__name__, self.name, self.score)
@@ -46,7 +46,7 @@ class StudentSATReport(object):
 
     @property
     def score(self):
-        return self.math.score + self.reading.score + self.writing.score
+        return self.math.score + self.reading_writing.score
 
     @property
     def equivalent_act(self):
@@ -66,10 +66,10 @@ class KaplanSATReport(KaplanReport):
 
     def to_dataframe(self):
         data = [(s.first_name, s.last_name, s.score, s.math.score,
-                 s.writing.score, s.reading.score, s.equivalent_act)
+                 s.reading_writing.score, s.equivalent_act)
                 for s in self.student_reports]
         columns = ['first_name', 'last_name', 'overall_score', 'math_score',
-                   'writing_score', 'reading_score', 'equivalent_act']
+                   'reading_writing_score', 'equivalent_act']
         return pd.DataFrame(data, columns=columns)
 
 
@@ -79,11 +79,11 @@ class SATParser(KaplanParser):
         reports = []
         for name, student in students.items():
             math = parse_section(student[1], SATMathReport)
-            reading = parse_section(student[2], SATReadingReport)
-            writing = parse_section(student[2], SATWritingReport)
+            reading_writing = parse_section(student[2], SATReadingWritingReport)
+            # writing = parse_section(student[2], SATWritingReport)
             first_name, last_name = get_name(student[1])
             test_date = get_test_date(student[1])
-            student_report = StudentSATReport(first_name, last_name, test_date, math, writing, reading)
+            student_report = StudentSATReport(first_name, last_name, test_date, math, reading_writing)
             reports.append(student_report)
 
         kaplan_report = KaplanSATReport(reports)
@@ -92,5 +92,3 @@ class SATParser(KaplanParser):
 def to_sat_report(filepath):
     parser = SATParser(filepath)
     return parser.parse()
-
-
