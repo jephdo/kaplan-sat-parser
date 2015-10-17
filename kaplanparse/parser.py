@@ -9,7 +9,7 @@ import pandas as pd
 
 
 def parse_section(page, report):
-    assert issubclass(report, SectionReport)
+    # assert issubclass(report, SectionReport)
     parser = SectionParser(page, report)
     return parser.to_report()
 
@@ -92,11 +92,7 @@ class SectionParser(object):
             page = page[page.find(name):]
 
         pattern = '{start_text}([0-9]+){end_text}'.format(start_text=start_text, end_text=end_text)
-        try:
-            raw_text = re.search(pattern, page).groups()[0]
-        except Exception:
-            import pdb; pdb.set_trace()
-
+        raw_text = re.search(pattern, page).groups()[0]
         return int(raw_text)
 
     def to_report(self):

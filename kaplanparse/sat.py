@@ -68,8 +68,8 @@ class KaplanSATReport(KaplanReport):
         data = [(s.first_name, s.last_name, s.score, s.math.score,
                  s.reading_writing.score, s.equivalent_act)
                 for s in self.student_reports]
-        columns = ['first_name', 'last_name', 'overall_score', 'math_score',
-                   'reading_writing_score', 'equivalent_act']
+        columns = ['first_name', 'last_name', 'composite', 'math',
+                   'reading_writing', 'equivalent_act']
         return pd.DataFrame(data, columns=columns)
 
 

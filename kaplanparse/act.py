@@ -64,8 +64,8 @@ class KaplanACTReport(KaplanReport):
         data = [(s.first_name, s.last_name, s.score, s.english.score, s.math.score,
                  s.reading.score, s.english.score, s.equivalent_sat)
                 for s in self.student_reports]
-        columns = ['first_name', 'last_name', 'overall_score', 'english_score',
-                   'math_score', 'reading_score', 'science_score', 'equivalent_sat']
+        columns = ['first_name', 'last_name', 'composite', 'english',
+                   'math', 'reading', 'science', 'equivalent_sat']
         return pd.DataFrame(data, columns=columns)
 
 
@@ -75,9 +75,9 @@ class ACTParser(KaplanParser):
         reports = []
         for name, student in students.items():
             english = parse_section(student[1], ACTEnglishReport)
-            math = parse_section(student[2], ACTMathReport)
+            math = parse_section(student[1], ACTMathReport)
             reading = parse_section(student[2], ACTReadingReport)
-            science = parse_section(student[3], ACTScienceReport)
+            science = parse_section(student[2], ACTScienceReport)
             first_name, last_name = get_name(student[1])
             test_date = get_test_date(student[1])
             student_report = StudentACTReport(first_name, last_name,
